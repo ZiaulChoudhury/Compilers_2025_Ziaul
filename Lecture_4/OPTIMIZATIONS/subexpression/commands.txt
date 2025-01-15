@@ -1,0 +1,5 @@
+clang -S -emit-llvm -O0 -Xclang -disable-O0-optnone input.c -o output.ll
+
+opt -passes=mem2reg -S output.ll -o s1.ll
+
+opt -passes=gvn -S s1.ll -o s2.ll 

@@ -1,0 +1,4 @@
+nsw = no signed wrap 
+
+For example, in C, signed overflow is undefined behavior, so addition lowers to an add nsw. Instead of wrapping on overflow, the instruction produces poison.
+

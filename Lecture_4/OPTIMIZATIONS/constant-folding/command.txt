@@ -1,0 +1,2 @@
+clang -S -emit-llvm -O0 -Xclang -disable-O0-optnone input.c -o output.ll
+opt --passes=instcombine -S output.ll -o s1.ll

@@ -1,0 +1,13 @@
+clang -S -emit-llvm -O0 -Xclang -disable-O0-optnone input.c -o output.ll
+
+opt -passes=mem2reg -S output.ll -o s1.ll
+
+#prints the passes in the LLVM 
+opt --print-passes 
+
+
+The nsw keyword in LLVM IR stands for No Signed Wrap. It is a flag that can be applied to integer arithmetic operations, such as add, sub, and mul. The purpose of nsw is to indicate that signed integer overflow is undefined for this operation. This allows the LLVM optimizer to make certain assumptions and perform aggressive optimizations.
+
+clang -I/Library/Developer//CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/ -std=c99 -L/Library/Developer/CommandLineTools//SDKs/MacOSX11.3.sdk/usr/lib/ main.c -lSystem -S -emit-llvm
+
+ 

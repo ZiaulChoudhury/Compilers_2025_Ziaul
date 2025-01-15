@@ -1,0 +1,1 @@
+clang -I/Library/Developer//CommandLineTools/SDKs/MacOSX13.1.sdk/usr/include/ -std=c99 -L/Library/Developer/CommandLineTools//SDKs/MacOSX11.3.sdk/usr/lib/ main.c -lSystem -S -emit-llvm

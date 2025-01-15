@@ -1,0 +1,49 @@
+Here’s a summary of why **GVN (Global Value Numbering)** does not work on your provided LLVM IR in a text format:
+
+---
+
+### Key Factors to Consider:
+
+1. **Different Base Values for Operations**:
+   - The expressions like `%8 = add nsw i32 2, %0` and `%9 = add nsw i32 3, %0` are **not identical**, even though they both involve `%0`. For GVN to eliminate redundancies, the computations must be **exactly the same** or involve common subexpressions that can be reused.
+
+2. **Use of Different Variables for Storing Results**:
+   - Even if certain expressions are redundant, they may not be eliminated by GVN because their results are stored in different locations. For instance, `%8` is stored in `%3`, and `%9` is stored in `%4`. These are **separate memory locations**, so GVN cannot optimize these computations into a single value.
+
+3. **Dependency Chain**:
+   - The value `%10` depends on both `%8` and `%9`, and it is stored in two separate memory locations (`%5` and `%6`). This makes it difficult for GVN to merge the computations because of the separate memory locations.
+
+4. **Side Effects**:
+   - There are no side effects (like function calls or volatile operations), which is good because it means GVN could optimize the computations if there were no memory location issues.
+
+5. **No Loop**:
+   - Since there is no loop in the IR, GVN has more opportunities to perform optimizations across basic blocks. However, the lack of exact redundancy still prevents optimization.
+
+---
+
+### Why GVN Does Not Optimize Here:
+- **Redundancy Not Identified**: GVN cannot identify significant redundancy because the expressions are not identical and use different memory locations.
+- **Memory Locations**: The results of the computations are stored in separate memory locations, preventing GVN from optimizing by reusing computations.
+
+---
+
+### Potential Improvements for GVN Optimization:
+
+1. **Use Common Expressions**:
+   - If `%8` and `%9` compute similar values, refactor the code to reuse calculations. For example:
+     ```llvm
+     %8 = add nsw i32 2, %0
+     %9 = add nsw i32 3, %0
+     %10 = add nsw i32 %8, %9   ; Use %8 and %9 directly
+     ```
+
+2. **Memory Optimization**:
+   - Store the results of `%8` and `%9` in the same location or pass the result of one calculation as an operand to another. This could help GVN identify opportunities to reuse values and eliminate redundant computations.
+
+3. **Shared Store**:
+   - Refactor the code to reduce the memory footprint, storing results in shared locations. This would enable GVN to more easily identify redundant computations.
+
+---
+
+### Conclusion:
+GVN does not optimize your provided LLVM IR because the computations use different memory locations and are not identical expressions. To make GVN optimizations work, consider refactoring the code to share operands and memory locations where possible.
